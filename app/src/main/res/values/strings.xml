@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">SMA</string>
+    <string name="content_main_menu">Main Menu</string>
+    <string name="register_button">Register</string>
+    <string name="login_button">Login</string>
+    <string name="app_name">Smart Plant Watering</string>
+</resources>
