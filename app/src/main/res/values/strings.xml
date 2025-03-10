@@ -3,5 +3,10 @@
     <string name="content_main_menu">Main Menu</string>
     <string name="register_button">Register</string>
     <string name="login_button">Login</string>
-    <string name="app_name">Smart Plant Watering</string>
+    <string name="app_name_menu">Smart Plant Watering</string>
+    <string name="username">Enter your Username</string>
+    <string name="password">Enter your Password</string>
+    <string name="welcome_back">Welcome Back!</string>
+    <string name="greeting">Let’s get back to growing your plants, shall we?</string>
+    <string name="forget_password">Forget password? Click here!</string>
 </resources>
