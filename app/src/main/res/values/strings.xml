@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">SMA</string>
     <string name="content_main_menu">Main Menu</string>
     <string name="register_button">Register</string>
@@ -7,6 +7,12 @@
     <string name="username">Enter your Username</string>
     <string name="password">Enter your Password</string>
     <string name="welcome_back">Welcome Back!</string>
-    <string name="greeting">Let’s get back to growing your plants, shall we?</string>
+    <string name="login_greet">Let’s get back to growing your plants, shall we?</string>
     <string name="forget_password">Forget password? Click here!</string>
+    <string name="confirm_password">Confirm your password</string>
+    <string name="register_greet">New to the app? Please filling these to create an account!</string>
+    <string name="switch_to_login" tools:ignore="StringEscaping">Already have an account? Let's login!</string>
+    <string name="switch_to_register" tools:ignore="StringEscaping">New here? Let's create an account!</string>
+    <string name="first_time">Greeting!</string>
+
 </resources>
