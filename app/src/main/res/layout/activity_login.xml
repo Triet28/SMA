@@ -8,6 +8,7 @@
     android:background="@drawable/login_background"
     android:gravity="center"
     android:padding="16dp"
+    tools:context=".LoginActivity"
     >
 
     <LinearLayout
@@ -48,28 +49,28 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="90dp"
+            android:layout_height="70dp"
             android:layout_marginTop="10dp"
-            android:hint="@string/username"
-            android:textColor=""
+            android:hint="@string/email"
             android:textColorHint="@color/text"
             android:gravity="center"
             android:background="@drawable/button_border"
             android:padding="15dp">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:layout_height="57dp"
+                android:layout_height="50dp"
                 android:layout_width="match_parent"
-                android:textSize="20sp"
-                android:drawableStart="@drawable/baseline_account_box_24"
+                android:textSize="15sp"
+                android:drawableStart="@drawable/email_svgrepo_com"
                 android:drawablePadding="8dp"
                 android:textColor="@color/text"
-                android:fontFamily="@font/delius_regular"/>
+                android:fontFamily="@font/delius_regular"
+                android:id="@+id/editEmail"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="90dp"
+            android:layout_height="70dp"
             android:layout_marginTop="10dp"
             android:background="@drawable/button_border"
             android:hint="@string/password"
@@ -81,17 +82,18 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
-                android:layout_height="57dp"
+                android:layout_height="50dp"
                 android:drawableStart="@drawable/lock"
                 android:drawablePadding="8dp"
                 android:inputType="textPassword"
                 android:textColor="@color/text"
-                android:textSize="20sp"
-                android:fontFamily="@font/delius_regular"/>
+                android:textSize="15sp"
+                android:fontFamily="@font/delius_regular"
+                android:id="@+id/editPassword"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
-            android:id="@+id/registerButton"
+            android:id="@+id/loginButton"
             android:layout_width="300dp"
             android:layout_height="60dp"
             android:layout_marginTop="20dp"
