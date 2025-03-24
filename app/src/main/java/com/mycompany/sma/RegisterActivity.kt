@@ -11,7 +11,7 @@ import com.mycompany.sma.databinding.ActivityRegisterBinding
 import com.mycompany.sma.entity.User
 import java.security.MessageDigest
 
-class RegisterActivity : AppCompatActivity() {
+class RegisterActivity : BaseActivity() {
     private lateinit var registerBinding: ActivityRegisterBinding
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
     private val db: FirebaseDatabase = FirebaseDatabase.getInstance()

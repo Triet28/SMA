@@ -123,6 +123,15 @@
             android:text="@string/switch_to_register"
             android:textStyle="bold"
             android:fontFamily="@font/delius_regular"/>
+        <TextView
+            android:id="@+id/forgotPasswordText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Forgot password? Click here"
+            android:textSize="15sp"
+            android:textColor="@color/text"
+            android:clickable="true"/>
     </LinearLayout>
 
 </RelativeLayout>

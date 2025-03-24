@@ -40,7 +40,8 @@ android {
 }
 
 dependencies {
-
+    implementation ("nl.dionsegijn:konfetti-xml:2.0.5")
+    implementation("nl.dionsegijn:konfetti-core:2.0.5")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)

@@ -23,7 +23,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 
-class HomepageActivity : AppCompatActivity() {
+class HomepageActivity : BaseActivity() {
     private lateinit var homepageBinding: ActivityHomepageBinding
     private lateinit var database: DatabaseReference
     val userId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
