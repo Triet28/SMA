@@ -3,6 +3,14 @@ package com.mycompany.sma
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
+////// These are needed for clickable text
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
+import android.view.View
+import android.widget.TextView
+//////
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.mycompany.sma.databinding.ActivityLoginBinding
@@ -27,6 +35,9 @@ class LoginActivity : AppCompatActivity() {
                 Toast.makeText(this, "Please enter username and password", Toast.LENGTH_SHORT).show()
             }
         }
+
+        setupRegisterText() // Call function of clickable text in login screen
+
         supportActionBar?.title = "Login"
     }
     private fun login(email: String, password: String) {
@@ -42,4 +53,35 @@ class LoginActivity : AppCompatActivity() {
                 }
             }
     }
+
+    /**
+     * Makes "create an account!" clickable inside the "New here? Let’s create an account!" text.
+     */
+    private fun setupRegisterText() {
+        val textView = findViewById<TextView>(R.id.tv_switch_to_register)  // Get TextView
+        val fullText = getString(R.string.switch_to_register)  // Load text from strings.xml
+        val clickableText = "create an account!"  // The part that is clickable
+
+        val spannableString = SpannableString(fullText)
+
+        // Define what happens when the clickable part is tapped
+        val clickableSpan = object : ClickableSpan() {
+            override fun onClick(widget: View) {
+                val intent = Intent(widget.context, RegisterActivity::class.java) // Direct to register screen
+                widget.context.startActivity(intent)
+            }
+        }
+
+        // Find the index of "create an account!" inside the full text
+        val startIndex = fullText.indexOf(clickableText)
+        val endIndex = startIndex + clickableText.length
+
+        // Apply the clickable effect to only "create an account!"
+        spannableString.setSpan(clickableSpan, startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+        // Set the formatted text with the clickable span
+        textView.text = spannableString
+        textView.movementMethod = LinkMovementMethod.getInstance()  // Enable link clicks
+    }
+
 }

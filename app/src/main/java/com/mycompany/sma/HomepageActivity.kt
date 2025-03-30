@@ -144,6 +144,7 @@ class HomepageActivity : AppCompatActivity() {
             }
         })
     }
+
     override fun onDestroy() {
         super.onDestroy()
         handler.removeCallbacks(updateRunnable) // Ngừng cập nhật khi Activity bị hủy

@@ -62,4 +62,5 @@ dependencies {
     implementation (libs.retrofit)
     implementation (libs.converter.gson)
     implementation (libs.logging.interceptor)
+    implementation ("androidx.constraintlayout:constraintlayout:2.1.4")
 }
