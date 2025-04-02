@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.mycompany.sma.databinding.ActivityMainBinding
-import com.mycompany.sma.PumpControl
 
 class MainActivity : AppCompatActivity() {
     lateinit var mainbinding : ActivityMainBinding
@@ -26,8 +25,6 @@ class MainActivity : AppCompatActivity() {
 
         // Send 0 or 1 to feed to determine pump state
         val pumpState = PumpControl();
-        pumpState.sendFeedDataWrapper(1); // Test value
-
     }
 }
 

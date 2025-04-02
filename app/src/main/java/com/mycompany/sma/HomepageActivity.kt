@@ -29,13 +29,13 @@ class HomepageActivity : AppCompatActivity() {
     val userId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
     private lateinit var adafruitApiService: AdafruitApi
     private val handler = Handler(Looper.getMainLooper()) // Handler chạy trên main thread
-    private val updateInterval = 5000L // 5 phút (300.000ms)
+    private val updateInterval = 5000L // 5 second (5000ms)
     private val updateRunnable = object : Runnable {
         override fun run() {
             getHumidityData()
             getTemperatureData()
             getSoilMoistureData()
-            handler.postDelayed(this, updateInterval) // Tiếp tục lặp lại sau 5 phút
+            handler.postDelayed(this, updateInterval) // Tiếp tục lặp lại sau 5 sec
         }
     }
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,6 +49,7 @@ class HomepageActivity : AppCompatActivity() {
         findPlantById("plantID_1")
         updateRunnable.run()
     }
+
     private fun findPlantById(plantId: String) {
         val plantsRef = FirebaseDatabase.getInstance().getReference("Users").child(userId).child("plants")
         plantsRef.addListenerForSingleValueEvent(object : ValueEventListener {
@@ -77,6 +78,7 @@ class HomepageActivity : AppCompatActivity() {
             }
         })
     }
+
     private fun getHumidityData() {
         val call = adafruitApiService.getFeedData("TQuanTum", "humidity-feed")
         call.enqueue(object : Callback<List<FeedResponse>> {
@@ -85,10 +87,17 @@ class HomepageActivity : AppCompatActivity() {
                 if (response.isSuccessful) {
                     val feedList = response.body()
                     if (!feedList.isNullOrEmpty()) {
-                        val latestData = feedList[0]  // Lấy dữ liệu đầu tiên
-                        Log.d("AdafruitAPI", "Humidity: ${latestData.value}")
+                        val latestFeed = feedList[0]  // Lấy dữ liệu đầu tiên
+
+                        // Store latest data in singleton class
+                        //val humidity = latestFeed.value.toFloatOrNull()
+                        //if (humidity != null) {
+                            //SensorDataSingleton.getHumidData(humidity)
+                        //}
+
+                        Log.d("AdafruitAPI", "Humidity: ${latestFeed.value}")
                         runOnUiThread {
-                            homepageBinding.humidityValue.text = "${latestData.value} %"
+                            homepageBinding.humidityValue.text = "${latestFeed.value} %"
                         }
                     }
                 } else {
@@ -108,6 +117,13 @@ class HomepageActivity : AppCompatActivity() {
                     val feedList = response.body()
                     if (!feedList.isNullOrEmpty()) {
                         val latestFeed = feedList[0]  // Lấy phần tử đầu tiên
+
+                        // Store latest value in singleton class
+                        //val temperature = latestFeed.value.toFloatOrNull()
+                        //if (temperature != null) {
+                            //SensorDataSingleton.getTempData(temperature)
+                        //}
+
                         Log.d("AdafruitAPI", "Temperature: ${latestFeed.value}")
                         homepageBinding.temperatureValue.text = "${latestFeed.value} °C"
                     } else {
@@ -130,6 +146,13 @@ class HomepageActivity : AppCompatActivity() {
                     val feedList = response.body()
                     if (!feedList.isNullOrEmpty()) {
                         val latestFeed = feedList[0]  // Lấy phần tử đầu tiên
+
+                        // Store latest value in singleton class
+                        //val moisture = latestFeed.value.toFloatOrNull()
+                        //if (moisture != null) {
+                            //SensorDataSingleton.getMoistureData(moisture)
+                        //}
+
                         Log.d("AdafruitAPI", "Temperature: ${latestFeed.value}")
                         homepageBinding.soilMoistureValue.text = "${latestFeed.value} %"
                     } else {
