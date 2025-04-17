@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "880278503248",
+    "firebase_url": "https://smartwateringsystem-16bac-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "smartwateringsystem-16bac",
+    "storage_bucket": "smartwateringsystem-16bac.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:880278503248:android:54c274c6d9ed127a007655",
+        "android_client_info": {
+          "package_name": "com.mycompany.sma"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCInuNszBG25b2gfFynN3VTCENBUfbA244"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
