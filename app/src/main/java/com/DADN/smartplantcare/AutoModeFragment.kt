@@ -30,6 +30,7 @@ class AutoModeFragment : Fragment() {
     private val userId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
     private lateinit var adafruitApiService: AdafruitApi
     private lateinit var plantId: String // Biến plantId
+    private var currentPumpState: Int = -1 // -1 là chưa xác định
 
     private val handler = Handler(Looper.getMainLooper())
     private val updateInterval = 5000L // 5 giây
@@ -178,7 +179,7 @@ class AutoModeFragment : Fragment() {
         })
     }
 
-    private fun checkAndControlPump(currentMoisture: Float) {
+    /*private fun checkAndControlPump(currentMoisture: Float) {
         // plantId đã được lấy từ arguments
         val plantRef = FirebaseDatabase.getInstance()
             .getReference("Plants")
@@ -198,6 +199,49 @@ class AutoModeFragment : Fragment() {
                     }
                 }
             }
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("PumpControl", "Failed to read thresholds: ${error.message}")
+            }
+        })
+    }*/
+
+    private fun checkAndControlPump(currentMoisture: Float) {
+        val plantRef = FirebaseDatabase.getInstance()
+            .getReference("Plants")
+            .child(plantId)
+
+        plantRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val plant = snapshot.getValue(Plants::class.java)
+                if (plant != null) {
+                    val min = plant.minSoilMoisture.toFloat()
+                    val max = plant.maxSoilMoisture.toFloat()
+
+                    val newPumpState = when {
+                        currentMoisture < min -> 1
+                        currentMoisture > max -> 0
+                        else -> currentPumpState // Không thay đổi
+                    }
+
+                    if (newPumpState != currentPumpState && newPumpState != -1) {
+                        currentPumpState = newPumpState
+                        sendFeedData(newPumpState)
+                        updateToggleButtonState(newPumpState)
+                    }
+                }
+            }
+
+            private fun updateToggleButtonState(state: Int) {
+                autoModeFragmentBinding.toggleButton.setOnCheckedChangeListener(null) // Gỡ listener
+                autoModeFragmentBinding.toggleButton.isChecked = (state == 1)
+                autoModeFragmentBinding.toggleButton.setOnCheckedChangeListener { _, isOn ->
+                    Log.d("AutoMode", "Manual toggle → $isOn")
+                    sendFeedData(if (isOn) 1 else 0)
+                    currentPumpState = if (isOn) 1 else 0 // Cập nhật luôn biến trạng thái
+                }
+            }
+
+
             override fun onCancelled(error: DatabaseError) {
                 Log.e("PumpControl", "Failed to read thresholds: ${error.message}")
             }
