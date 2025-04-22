@@ -52,6 +52,31 @@ class HomeActivity : AppCompatActivity() {
                 supportActionBar?.setDisplayHomeAsUpEnabled(false)
             }
         }
+
+        homeBinding.bottomNavigation.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.nav_home -> {
+                    // Hiển thị lại danh sách cây
+                    homeBinding.homeGroup.visibility = View.VISIBLE
+                    homeBinding.fragmentContainer.visibility = View.GONE
+                    true
+                }
+
+                R.id.nav_settings -> {
+                    val settingsFragment = SettingsFragment()
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container, settingsFragment)
+                        .addToBackStack(null)
+                        .commit()
+
+                    homeBinding.homeGroup.visibility = View.GONE
+                    homeBinding.fragmentContainer.visibility = View.VISIBLE
+                    true
+                }
+
+                else -> false
+            }
+        }
     }
 
     fun retriveDataFromDatabse() {
@@ -146,22 +171,5 @@ class HomeActivity : AppCompatActivity() {
 
         dialogMessage.create().show()
     }
-
-/*    override fun onResume() {
-        super.onResume()
-        homeBinding.homeGroup.visibility = View.VISIBLE
-        // hoặc các thành phần khác của home nếu bạn đã ẩn đi trước đó
-    }*/
-
- /*   override fun onBackPressed() {
-        val fragmentManager = supportFragmentManager
-        if (fragmentManager.backStackEntryCount > 0) {
-            fragmentManager.popBackStack()
-            homeBinding.fragmentContainer.visibility = View.GONE
-            homeBinding.homeGroup.visibility = View.VISIBLE
-        } else {
-            super.onBackPressed()
-        }
-    }*/
 
 }
