@@ -20,10 +20,19 @@ class SettingsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        requireActivity().title = "Settings"
+
         settingsFragmentBinding = FragmentSettingsBinding.inflate(inflater, container, false)
         auth = FirebaseAuth.getInstance()
 
-        settingsFragmentBinding.changePasswordButton.setOnClickListener {
+        val currentUser = auth.currentUser
+        if (currentUser != null) {
+            settingsFragmentBinding.userEmailTextView.text = currentUser.email
+        }
+
+
+
+        settingsFragmentBinding.logoutButton.setOnClickListener {
             auth.signOut()
             val intent = Intent(requireContext(), LoginActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK

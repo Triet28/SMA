@@ -29,6 +29,7 @@ class AutoModeFragment : Fragment() {
     lateinit var database: DatabaseReference
     private val userId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
     private lateinit var adafruitApiService: AdafruitApi
+    private lateinit var plantId: String // Biến plantId
 
     private val handler = Handler(Looper.getMainLooper())
     private val updateInterval = 5000L // 5 giây
@@ -45,9 +46,12 @@ class AutoModeFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
         autoModeFragmentBinding = FragmentAutoModeBinding.inflate(inflater, container, false)
         adafruitApiService = RetrofitClient.instance.create(AdafruitApi::class.java)
+
+        // Lấy plantId từ arguments
+        plantId = arguments?.getString("plantId") ?: throw IllegalStateException("plantId phải được truyền vào fragment")
+
         return autoModeFragmentBinding.root
     }
 
@@ -62,19 +66,24 @@ class AutoModeFragment : Fragment() {
         deleteAllItem?.isVisible = false
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        Log.d("AutoModeFragment", "onViewCreated đã được gọi")
         setHasOptionsMenu(true)
 
-        (requireActivity() as AppCompatActivity).supportActionBar?.apply {
-            setDisplayHomeAsUpEnabled(true)
-            setHomeAsUpIndicator(R.drawable.ic_arrow) // dùng icon back bạn muốn
+        autoModeFragmentBinding.toggleButton.setOnCheckedChangeListener { _, isOn ->
+            Log.d("AutoMode", "Manual toggle → $isOn")
+            sendFeedData(if (isOn) 1 else 0)
         }
 
+        // Hiển thị nút back trên toolbar
+        (requireActivity() as AppCompatActivity).supportActionBar?.apply {
+            setDisplayHomeAsUpEnabled(true)
+            setHomeAsUpIndicator(R.drawable.ic_arrow) // Sử dụng icon back của bạn
+        }
 
-        super.onViewCreated(view, savedInstanceState)
         database = FirebaseDatabase.getInstance().getReference("Users/$userId/plants")
-        findPlantById("plantId")
+        findPlantById(plantId) // Sử dụng plantId từ arguments để tìm cây
         updateRunnable.run()
     }
 
@@ -143,14 +152,20 @@ class AutoModeFragment : Fragment() {
         })
     }
 
+
     private fun getSoilMoistureData() {
         adafruitApiService.getFeedData("TQuanTum", "soilmoisture-feed").enqueue(object : Callback<List<FeedResponse>> {
             override fun onResponse(call: Call<List<FeedResponse>>, response: Response<List<FeedResponse>>) {
                 if (response.isSuccessful) {
                     val feedList = response.body()
                     if (!feedList.isNullOrEmpty()) {
-                        val value = feedList[0].value
-                        autoModeFragmentBinding.soilMoistureValue.text = "$value %"
+                        val valueStr = feedList[0].value
+                        autoModeFragmentBinding.soilMoistureValue.text = "$valueStr %"
+
+                        val moistureValue = valueStr.toFloatOrNull()
+                        if (moistureValue != null) {
+                            checkAndControlPump(moistureValue)
+                        }
                     }
                 } else {
                     Log.e("AdafruitAPI", "Soil moisture error: ${response.code()}")
@@ -159,6 +174,52 @@ class AutoModeFragment : Fragment() {
 
             override fun onFailure(call: Call<List<FeedResponse>>, t: Throwable) {
                 Log.e("AdafruitAPI", "Soil moisture fail: ${t.message}")
+            }
+        })
+    }
+
+    private fun checkAndControlPump(currentMoisture: Float) {
+        // plantId đã được lấy từ arguments
+        val plantRef = FirebaseDatabase.getInstance()
+            .getReference("Plants")
+            .child(plantId)
+
+        plantRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val plant = snapshot.getValue(Plants::class.java)
+                if (plant != null) {
+                    val min = plant.minSoilMoisture.toFloat()
+                    val max = plant.maxSoilMoisture.toFloat()
+
+                    when {
+                        currentMoisture < min -> sendFeedData(1) // bật bơm
+                        currentMoisture > max -> sendFeedData(0) // tắt bơm
+                        else -> Log.d("PumpLogic", "Moisture within range, no action.")
+                    }
+                }
+            }
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("PumpControl", "Failed to read thresholds: ${error.message}")
+            }
+        })
+    }
+
+
+    private fun sendFeedData(value: Int) {
+        val call = adafruitApiService.sendDataToFeed("TQuanTum", "test-feed", FeedRequest(value))
+
+        call.enqueue(object : Callback<AdafruitResponse> {
+            override fun onResponse(call: Call<AdafruitResponse>, response: Response<AdafruitResponse>) {
+                if (response.isSuccessful) {
+                    Log.d("Adafruit", "Pump state updated to $value")
+                    Log.d("Adafruit", "Response body: ${response.body()?.toString()}")
+                } else {
+                    Log.e("Adafruit", "Pump update error: ${response.code()}")
+                }
+            }
+
+            override fun onFailure(call: Call<AdafruitResponse>, t: Throwable) {
+                Log.e("Adafruit", "Pump update failed: ${t.message}")
             }
         })
     }
@@ -175,7 +236,4 @@ class AutoModeFragment : Fragment() {
         }
         return super.onOptionsItemSelected(item)
     }
-
-
-
 }

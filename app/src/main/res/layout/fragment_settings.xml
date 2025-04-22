@@ -2,17 +2,27 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="24dp"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:gravity="center_horizontal">
+
+    <TextView
+        android:id="@+id/userEmailTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Email người dùng"
+        android:textSize="18sp"
+        android:layout_marginBottom="32dp"
+        android:textColor="@android:color/black" />
 
     <Button
         android:id="@+id/changePasswordButton"
-        android:layout_width="match_parent"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:text="Change Password" />
 
     <Button
         android:id="@+id/logoutButton"
-        android:layout_width="match_parent"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="Log Out" />

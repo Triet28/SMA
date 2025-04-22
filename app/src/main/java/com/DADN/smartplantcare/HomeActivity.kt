@@ -38,6 +38,14 @@ class HomeActivity : AppCompatActivity() {
         val view = homeBinding.root
         setContentView(view)
 
+        plantsAdapter = plantsAdapter(this, plantsList) { plant ->
+            openAutoModeFragment(plant.plantId)
+        }
+
+// Gắn layoutManager và adapter ngay lập tức
+        homeBinding.recyclerView.layoutManager = LinearLayoutManager(this)
+        homeBinding.recyclerView.adapter = plantsAdapter
+
 
         homeBinding.addPlantsButton.setOnClickListener {
             val intent = Intent(this, AddPlantsActivity::class.java)
@@ -79,6 +87,8 @@ class HomeActivity : AppCompatActivity() {
         }
     }
 
+
+
     fun retriveDataFromDatabse() {
         myRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -91,14 +101,8 @@ class HomeActivity : AppCompatActivity() {
                     }
                 }
 
-                // Khởi tạo hoặc cập nhật adapter ở đây
-                plantsAdapter = plantsAdapter(this@HomeActivity, plantsList) { plant ->
-                    openAutoModeFragment(plant.plantId)
-                }
-                homeBinding.recyclerView.layoutManager = LinearLayoutManager(this@HomeActivity)
-                homeBinding.recyclerView.adapter = plantsAdapter
+                plantsAdapter.notifyDataSetChanged()
 
-                // Kiểm tra danh sách có rỗng không
                 if (plantsList.isEmpty()) {
                     homeBinding.recyclerView.visibility = View.GONE
                     homeBinding.imageView2.visibility = View.VISIBLE
@@ -109,8 +113,6 @@ class HomeActivity : AppCompatActivity() {
                     homeBinding.noPlantYet.visibility = View.GONE
                 }
             }
-
-
 
             override fun onCancelled(error: DatabaseError) {
                 // Hiển thị lỗi nếu có

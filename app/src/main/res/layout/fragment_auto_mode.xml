@@ -126,4 +126,17 @@
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
+    <ToggleButton
+        android:id="@+id/toggleButton"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:text="Manual Pump Control"
+        android:textOff="Pump OFF"
+        android:textOn="Pump ON"
+        android:layout_gravity="center"
+        android:background="@color/green"
+        android:textColor="@color/white"
+        android:layout_marginTop="50dp"/>
+
+
 </LinearLayout>
